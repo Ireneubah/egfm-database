@@ -1,4 +1,4 @@
-CREATE TABLE address (
+CREATE TABLE root_data.address (
     id SERIAL PRIMARY KEY,
     member_id INT NOT NULL,
     address_line1 VARCHAR(255) NOT NULL,

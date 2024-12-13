@@ -1,4 +1,4 @@
-CREATE TABLE child_guardian (
+CREATE TABLE root_data.child_guardian (
     child_id INT NOT NULL,
     guardian_id INT NOT NULL,
     PRIMARY KEY (child_id, guardian_id),

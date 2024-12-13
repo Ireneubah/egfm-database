@@ -1,3 +1,5 @@
+CREATE SCHEMA root_data
+
 CREATE TABLE root_data.adult_member (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,

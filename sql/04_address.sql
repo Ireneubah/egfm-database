@@ -6,5 +6,5 @@ CREATE TABLE root_data.address (
     city VARCHAR(100) NOT NULL,
     postal_code VARCHAR(20) NOT NULL,
     country VARCHAR(100) NOT NULL,
-    FOREIGN KEY (member_id) REFERENCES adult_member(id) ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES root_data.adult_member(id) ON DELETE CASCADE
 );

@@ -8,6 +8,11 @@ const port = process.env.PORT || 3000;
 // Middleware to parse JSON data
 app.use(express.json());
 
+// Root route
+app.get('/', (req, res) => {
+    res.send('Welcome to the Express app!');
+  });
+
 // Test route to check database connection
 app.get('/test', async (req, res) => {
   try {

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGFM Registration Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>EGFM Registration Form</h1>
+    <!-- Adults -->
+    <div class="form-section" id="adult-section">
+        <h3>Adult Member Information</h3>
+        <button type="button" class="add-button" onclick="addSection('adult-section', 'adult-template')">Add Adult</button>
+    </div>
+    <template id="adult-template">
+        <div class="adult-member">
+            <h4>Adult Member</h4>
+            <label for="adult-first-name">First Name:</label><br>
+            <input type="text" name="adult_first_name[]" required><br><br>
+            <label for="adult-last-name">Last Name:</label><br>
+            <input type="text" name="adult_last_name[]" required><br><br>
+            <label for="marital-status">Marital Status:</label><br>
+            <select name="marital_status[]" required>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+            </select><br><br>
+            <label for="adult-email">Email:</label><br>
+            <input type="email" name="adult_email[]" required><br><br>
+            <label for="adult-phone">Phone:</label><br>
+            <input type="tel" name="adult_phone[]" required><br><br>
+            <label for="adult-dob">Date of Birth:</label><br>
+            <input type="date" name="adult_dob[]" required><br><br>
+            <label for="adult-nationality">Nationality:</label><br>
+            <input type="text" name="adult_nationality[]" required><br><br>
+            <button type="button" class="remove-button" onclick="removeSection(this)">Remove</button>
+        </div>
+    </template>
+
+    <!-- Children -->
+    <div class="form-section" id="child-section">
+        <h3>Child Member Information</h3>
+        <button type="button" class="add-button" onclick="addSection('child-section', 'child-template')">Add Child</button>
+    </div>
+    <template id="child-template">
+        <div class="child-member">
+            <h4>Child Member</h4>
+            <label for="child-first-name">First Name:</label><br>
+            <input type="text" name="child_first_name[]" required><br><br>
+            <label for="child-last-name">Last Name:</label><br>
+            <input type="text" name="child_last_name[]" required><br><br>
+            <label for="child-dob">Date of Birth:</label><br>
+            <input type="date" name="child_dob[]" required><br><br>
+            <button type="button" class="remove-button" onclick="removeSection(this)">Remove</button>
+        </div>
+    </template>
+
+    <!-- Home Address -->
+    <div class="form-section">
+        <h3>Home Address</h3>
+        <label for="postcode">Postcode:</label><br>
+        <input type="text" id="postcode" name="postcode" required><br><br>
+        <label for="city">City:</label><br>
+        <input type="text" id="city" name="city" required><br><br>
+        <label for="country">Country:</label><br>
+        <input type="text" id="country" name="country" required>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

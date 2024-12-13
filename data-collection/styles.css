@@ -1,32 +1,113 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
+
+.banner {
+    width: auto;
+    text-align: center;
+    padding: 10px 0; 
+}
+
+.banner-image {
+    width: 50%;
+    height: auto; 
+    max-height: 200px; /* Set a maximum height */
+    object-fit: cover; 
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin: 20px 0;
+}
+
 .form-section {
-    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 600px;
     padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
 }
+
 .form-section h3 {
-    margin-top: 0;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
-.add-button {
-    margin-top: 10px;
+
+label {
     display: block;
-    padding: 8px 15px;
-    color: white;
-    background-color: #28a745;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    margin-bottom: 8px;
+    font-weight: bold;
 }
-.remove-button {
-    margin-top: 10px;
-    padding: 5px 10px;
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.add-button {
+    display: inline-block;
+    background-color: #28a745; /* Green background */
     color: white;
-    background-color: #dc3545;
+    padding: 12px 20px; /* Increase padding for a larger button */
     border: none;
-    border-radius: 5px;
+    border-radius: 8px; /* Rounded edges */
     cursor: pointer;
+    font-size: 16px; /* Larger font size */
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.add-button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.remove-button {
+    display: inline-block;
+    background-color: #dc3545; /* Red background */
+    color: white;
+    padding: 12px 20px; /* Increase padding for a larger button */
+    border: none;
+    border-radius: 8px; /* Rounded edges */
+    cursor: pointer;
+    font-size: 16px; /* Larger font size */
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+
+button[type="submit"] {
+    display: block;
+    background-color: #28a745; /* Green background */
+    color: white;
+    padding: 12px 20px; /* Increase padding for a larger button */
+    border: none;
+    border-radius: 8px; /* Rounded edges */
+    cursor: pointer;
+    font-size: 16px; /* Larger font size */
+    margin: 20px auto; /* Centres the button */
+    max-width: 400px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838; /* Darker green on hover */
 }

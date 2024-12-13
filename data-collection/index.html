@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
+    <!-- Banner Section -->
+    <div class="banner">
+        <img src="images/images.png" alt="Banner Image" class="banner-image">
+    </div>
     <h1>EGFM Registration Form</h1>
     <!-- Adults -->
     <div class="form-section" id="adult-section">
@@ -54,6 +57,8 @@
             <input type="text" name="child_last_name[]" required><br><br>
             <label for="child-dob">Date of Birth:</label><br>
             <input type="date" name="child_dob[]" required><br><br>
+            <label for="child-nationality">Nationality:</label><br>
+            <input type="text" name="child_nationality[]" required><br><br>
             <button type="button" class="remove-button" onclick="removeSection(this)">Remove</button>
         </div>
     </template>
@@ -61,10 +66,14 @@
     <!-- Home Address -->
     <div class="form-section">
         <h3>Home Address</h3>
-        <label for="postcode">Postcode:</label><br>
-        <input type="text" id="postcode" name="postcode" required><br><br>
+        <label for="address-line-1">Address line 1</label><br>
+        <input type="text" id="address-line-1" name="address-line-1" required><br><br>
+        <label for="address-line-2">Address line 2</label><br>
+        <input type="text" id="address-line-2" name="address-line-2" required><br><br>
         <label for="city">City:</label><br>
         <input type="text" id="city" name="city" required><br><br>
+        <label for="postcode">Postcode:</label><br>
+        <input type="text" id="postcode" name="postcode" required><br><br>
         <label for="country">Country:</label><br>
         <input type="text" id="country" name="country" required>
     </div>

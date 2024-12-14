@@ -16,13 +16,13 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
     const adults = [];
     document.querySelectorAll('.adult-member').forEach(adult => {
         adults.push({
-            first_name: adult.querySelector('input[name="adult_first_name[]"]').value,
-            last_name: adult.querySelector('input[name="adult_last_name[]"]').value,
-            marital_status: adult.querySelector('select[name="marital_status[]"]').value,
-            email: adult.querySelector('input[name="adult_email[]"]').value,
-            phone: adult.querySelector('input[name="adult_phone[]"]').value,
-            dob: adult.querySelector('input[name="adult_dob[]"]').value,
-            nationality: adult.querySelector('input[name="adult_nationality[]"]').value
+            first_name: adult.querySelector('input[name="adultMembers[][first_name]"]').value,
+            last_name: adult.querySelector('input[name="adultMembers[][last_name]"]').value,
+            marital_status: adult.querySelector('select[name="adultMembers[][marital_status]"]').value,
+            email: adult.querySelector('input[name="adultMembers[][email]"]').value,
+            phone: adult.querySelector('input[name="adultMembers[][phone]"]').value,
+            dob: adult.querySelector('input[name="adultMembers[][dob]"]').value,
+            nationality: adult.querySelector('input[name="adultMembers[][nationality]"]').value
         });
     });
 
@@ -30,10 +30,10 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
     const children = [];
     document.querySelectorAll('.child-member').forEach(child => {
         children.push({
-            first_name: child.querySelector('input[name="child_first_name[]"]').value,
-            last_name: child.querySelector('input[name="child_last_name[]"]').value,
-            dob: child.querySelector('input[name="child_dob[]"]').value,
-            nationality: child.querySelector('input[name="child_nationality[]"]').value
+            first_name: child.querySelector('input[name="childMembers[][first_name]"]').value,
+            last_name: child.querySelector('input[name="childMembers[][last_name]"]').value,
+            dob: child.querySelector('input[name="childMembers[][dob]"]').value,
+            nationality: child.querySelector('input[name="childMembers[][nationality]"]').value
         });
     });
 

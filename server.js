@@ -1,46 +1,103 @@
+
 const express = require('express');
-const { Client } = require('pg');
+const { Pool } = require('pg');
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
+const PORT = process.env.PORT || 5000;
 
+// Middleware
+app.use(cors({
+    origin: 'https://egfm-uk-db-f6b2e8e6c380.herokuapp.com/'
+}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public')); // Serve static files (HTML, CSS, JS)
 
-const client = new Client({
-    connectionString: process.env.DATABASE_URL, // Ensure this is set in Heroku config vars
+// PostgreSQL Connection Pool
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false // Required for some Heroku PostgreSQL setups
+        rejectUnauthorized: false
     }
 });
 
-client.connect();
+// Test Database Connection
+pool.connect()
+    .then(() => console.log('Connected to the database'))
+    .catch(err => console.error('Database connection error', err));
 
+// Route to Serve the HTML Form
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Route to Handle Form Submissions
 app.post('/submit', async (req, res) => {
-    const { adultMembers, address } = req.body;
+    const client = await pool.connect();
 
     try {
-        // Loop through each adult member and insert into the adult_member table
+        await client.query('BEGIN');
+
+        const { adultMembers, childMembers, address } = req.body;
+
+        // Insert Adult Members and capture their IDs
+        const adultIds = [];
         for (const adult of adultMembers) {
             const result = await client.query(
-                `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+                `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                 RETURNING id`,
                 [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
             );
 
-            const memberId = result.rows[0].id; // Retrieve the generated id for this adult member
+            // Store the returned ID
+            const memberId = result.rows[0].id;
+            console.log('Inserted Adult Member ID:', memberId);
+            adultIds.push(memberId);
+        }
 
-            // Insert the address using the generated memberId
+        // Insert Child Members (assuming these don't need a member_id reference)
+        for (const child of childMembers) {
             await client.query(
-                `INSERT INTO root_data.address (member_id, address_line1, address_line2, city, postal_code, country)
-                 VALUES ($1, $2, $3, $4, $5, $6)`,
-                [memberId, address.address_line1, address.address_line2, address.city, address.postcode, address.country]
+                `INSERT INTO root_data.child_member (first_name, last_name, dob, nationality)
+                 VALUES ($1, $2, $3, $4)`,
+                [child.first_name, child.last_name, child.dob, child.nationality]
             );
         }
 
-        res.status(200).send('Registration submitted successfully!');
+        // Insert Home Address for the first adult member (you can modify this logic as needed)
+        if (adultIds.length > 0) {
+            await client.query(
+                `INSERT INTO root_data.address (member_id, address_line1, address_line2, city, postal_code, country)
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                [
+                    adultIds[0], // Use the first adult member's ID or modify to suit your requirements
+                    address['address_line1'],
+                    address['address_line2'],
+                    address.city,
+                    address.postcode,
+                    address.country
+                ]
+            );
+        } else {
+            throw new Error('No adult member IDs were generated.');
+        }
+
+        await client.query('COMMIT');
+        res.status(200).send('Data submitted successfully');
     } catch (error) {
+        await client.query('ROLLBACK');
         console.error('Error inserting data:', error);
-        res.status(500).send('Error submitting registration.');
+        res.status(500).send('Server error');
+    } finally {
+        client.release();
     }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+// Start the Server
+app.listen(PORT, () => {
+    console.log(Server is running on port ${PORT});
+});

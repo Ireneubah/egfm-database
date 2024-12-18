@@ -45,7 +45,7 @@ app.post('/submit', async (req, res) => {
         // Insert Adult Members
         for (const adult of adultMembers) {
             await client.query(
-                `INSERT INTO adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
+                `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
                  VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())`,
                 [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
             );
@@ -54,7 +54,7 @@ app.post('/submit', async (req, res) => {
         // Insert Child Members
         for (const child of childMembers) {
             await client.query(
-                `INSERT INTO child_member (first_name, last_name, dob, nationality)
+                `INSERT INTO root_data.child_member (first_name, last_name, dob, nationality)
                  VALUES ($1, $2, $3, $4)`,
                 [child.first_name, child.last_name, child.dob, child.nationality]
             );
@@ -62,7 +62,7 @@ app.post('/submit', async (req, res) => {
 
         // Insert Home Address
         await client.query(
-            `INSERT INTO address (address_line1, address_line2, city, postal_code, country)
+            `INSERT INTO root_data.address (address_line1, address_line2, city, postal_code, country)
             VALUES ($1, $2, $3, $4, $5)`,
             [
                 address['address_line1'],

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { Pool } = require('pg');
 const path = require('path');
@@ -99,5 +98,5 @@ app.post('/submit', async (req, res) => {
 
 // Start the Server
 app.listen(PORT, () => {
-    console.log(Server is running on port ${PORT});
+    console.log('Server is running on port ${PORT}');
 });

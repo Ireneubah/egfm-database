@@ -1,7 +1,17 @@
-function addSection(sectionId, templateId) {
+function addAdultSection(sectionId, templateId) {
     const section = document.getElementById(sectionId);
     const template = document.getElementById(templateId).content.cloneNode(true);
     section.appendChild(template);
+    const addButton = document.getElementById('add-adult-btn');
+    section.appendChild(addButton);
+}
+
+function addChildSection(sectionId, templateId) {
+    const section = document.getElementById(sectionId);
+    const template = document.getElementById(templateId).content.cloneNode(true);
+    section.appendChild(template);
+    const addButton = document.getElementById('add-child-btn');
+    section.appendChild(addButton);
 }
 
 function removeSection(button) {
@@ -9,7 +19,7 @@ function removeSection(button) {
     section.parentElement.removeChild(section);
 }
 
-document.querySelector('button[type="submit"]').addEventListener('click', async (event) => {
+document.querySelector("#submit-btn").addEventListener('click', async (event) => {
     event.preventDefault();
 
     // Collect Adult Member Data
@@ -39,9 +49,11 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
 
     // Collect Home Address Data
     const address = {
-        postcode: document.querySelector('input[name="postcode"]').value,
-        city: document.querySelector('input[name="city"]').value,
-        country: document.querySelector('input[name="country"]').value
+        address_line1: document.querySelector('input[name="address[address-line-1]"]').value,
+        address_line2: document.querySelector('input[name="address[address-line-2]"]').value,
+        city: document.querySelector('input[name="address[city]"]').value,
+        postcode: document.querySelector('input[name="address[postcode]"]').value,
+        country: document.querySelector('input[name="address[country]"]').value
     };
 
     // Send Data to the Server
@@ -63,6 +75,6 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred.');
+        alert('An error occurred: ${error.message}');
     }
 });

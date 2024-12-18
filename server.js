@@ -42,12 +42,31 @@ app.post('/submit', async (req, res) => {
 
         const { adultMembers, childMembers, address } = req.body;
 
-        // Insert Adult Members
+        // Insert Adult Members and capture their member_ids
+        const memberIds = [];
         for (const adult of adultMembers) {
-            await client.query(
+            const result = await client.query(
                 `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())`,
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                 RETURNING member_id`,
                 [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
+            );
+            memberIds.push(result.rows[0].member_id);
+        }
+
+        // Insert Home Address for Each Adult Member
+        for (const memberId of memberIds) {
+            await client.query(
+                `INSERT INTO root_data.address (member_id, address_line1, address_line2, city, postal_code, country)
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                [
+                    memberId,
+                    address['address_line1'],
+                    address['address_line2'],
+                    address.city,
+                    address.postcode,
+                    address.country
+                ]
             );
         }
 
@@ -59,19 +78,6 @@ app.post('/submit', async (req, res) => {
                 [child.first_name, child.last_name, child.dob, child.nationality]
             );
         }
-
-        // Insert Home Address
-        await client.query(
-            `INSERT INTO root_data.address (address_line1, address_line2, city, postal_code, country)
-            VALUES ($1, $2, $3, $4, $5)`,
-            [
-                address['address_line1'],
-                address['address_line2'],
-                address.city,
-                address.postcode,
-                address.country
-            ]
-        );
 
         await client.query('COMMIT');
         res.status(200).send('Data submitted successfully');

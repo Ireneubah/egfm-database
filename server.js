@@ -6,6 +6,9 @@ app.use(express.json());
 
 const client = new Client({
     connectionString: process.env.DATABASE_URL, // Ensure this is set in Heroku config vars
+    ssl: {
+        rejectUnauthorized: false // Required for some Heroku PostgreSQL setups
+    }
 });
 
 client.connect();

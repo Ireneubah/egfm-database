@@ -43,7 +43,6 @@ app.post('/submit', async (req, res) => {
         const { adultMembers, childMembers, address } = req.body;
 
         // Insert Adult Members and capture their IDs
-        const adultIds = [];
         for (const adult of adultMembers) {
             const result = await client.query(
                 `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
@@ -55,7 +54,20 @@ app.post('/submit', async (req, res) => {
             // Store the returned ID
             const memberId = result.rows[0].id;
             console.log('Inserted Adult Member ID:', memberId);
-            adultIds.push(memberId);
+
+            // Insert Home Address for each adult member
+            await client.query(
+                `INSERT INTO root_data.address (member_id, address_line1, address_line2, city, postal_code, country)
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                [
+                    memberId,
+                    address['address_line1'],
+                    address['address_line2'],
+                    address.city,
+                    address.postcode,
+                    address.country
+                ]
+            );
         }
 
         // Insert Child Members (assuming these don't need a member_id reference)
@@ -65,24 +77,6 @@ app.post('/submit', async (req, res) => {
                  VALUES ($1, $2, $3, $4)`,
                 [child.first_name, child.last_name, child.dob, child.nationality]
             );
-        }
-
-        // Insert Home Address for the first adult member (you can modify this logic as needed)
-        if (adultIds.length > 0) {
-            await client.query(
-                `INSERT INTO root_data.address (member_id, address_line1, address_line2, city, postal_code, country)
-                 VALUES ($1, $2, $3, $4, $5, $6)`,
-                [
-                    adultIds[0], // Use the first adult member's ID or modify to suit your requirements
-                    address['address_line1'],
-                    address['address_line2'],
-                    address.city,
-                    address.postcode,
-                    address.country
-                ]
-            );
-        } else {
-            throw new Error('No adult member IDs were generated.');
         }
 
         await client.query('COMMIT');
@@ -95,6 +89,7 @@ app.post('/submit', async (req, res) => {
         client.release();
     }
 });
+
 
 // Start the Server
 app.listen(PORT, () => {

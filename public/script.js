@@ -86,7 +86,7 @@ document.querySelector("#submit-btn").addEventListener('click', async (event) =>
             email: adult.querySelector('input[name="adultMembers[][email]"]').value,
             phone: adult.querySelector('input[name="adultMembers[][phone]"]').value,
             dob: adult.querySelector('input[name="adultMembers[][dob]"]').value,
-            nationality: adult.querySelector('input[name="adultMembers[][nationality]"]').value
+            nationality: adult.querySelector('select[name="adultMembers[][nationality]"]').value
         });
     });
 
@@ -97,7 +97,7 @@ document.querySelector("#submit-btn").addEventListener('click', async (event) =>
             first_name: child.querySelector('input[name="childMembers[][first_name]"]').value,
             last_name: child.querySelector('input[name="childMembers[][last_name]"]').value,
             dob: child.querySelector('input[name="childMembers[][dob]"]').value,
-            nationality: child.querySelector('input[name="childMembers[][nationality]"]').value
+            nationality: child.querySelector('select[name="childMembers[][nationality]"]').value
         });
     });
 
@@ -112,7 +112,7 @@ document.querySelector("#submit-btn").addEventListener('click', async (event) =>
 
     // Send Data to the Server
     try {
-        const response = await fetch('/submit', {
+        const response = await fetch('https://egfm-uk-db-f6b2e8e6c380.herokuapp.com/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

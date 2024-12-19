@@ -103,7 +103,7 @@ app.post('/submit', async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.status(200).send('Data submitted successfully');
+        res.redirect('/success.html');
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error inserting data:', error);

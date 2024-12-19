@@ -112,7 +112,7 @@ document.querySelector("#submit-btn").addEventListener('click', async (event) =>
 
     // Send Data to the Server
     try {
-        const response = await fetch('https://egfm-uk-db-f6b2e8e6c380.herokuapp.com/submit', {
+        const response = await fetch('/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

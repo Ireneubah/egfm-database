@@ -5,8 +5,9 @@ $(document).ready(function () {
             if (!$(this).data('iti-initialized')) {
                 window.intlTelInput(this, {
                     initialCountry: "gb", // Default to the UK
-                    preferredCountries: ["gb", "us", "ng"],
+                    preferredCountries: ["gb", "us", "ng","zm","ca","pl","ke"],
                     separateDialCode: true,
+                    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
                 });
                 $(this).data('iti-initialized', true);
             }

@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="script.js"></script>
+    <script src="validate.js"></script> 
 </head>
 <body>
     <form>
@@ -42,7 +44,7 @@
                 <input type="email" name="adultMembers[][email]" required><br><br>
         
                 <label>Phone:</label><br>
-                <input type="tel" name="adultMembers[][phone]" required><br><br>
+                <input type="tel" class="phone" name="adultMembers[][phone]" required><br><br>
         
                 <label>Date of Birth:</label><br>
                 <input type="date" name="adultMembers[][dob]" required><br><br>
@@ -96,7 +98,5 @@
         <!-- Submit Button -->
         <button type="submit" id="submit-btn">Submit</button>
     </form>
-    <script src="script.js"></script>
-    <script src="validate.js"></script> 
 </body>
 </html>

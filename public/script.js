@@ -47,13 +47,29 @@ const countries = [
     "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ];
 
-// Populate nationality dropdowns
-$(document).ready(function () {
-    $('.nationality-select').each(function () {
+function populateNationalityDropdowns() {
+    const nationalitySelects = document.querySelectorAll('.nationality-select');
+    nationalitySelects.forEach(select => {
+        // Clear any existing options except the placeholder
+        select.innerHTML = '<option value="">Select Nationality</option>';
+        
         countries.forEach(country => {
-            $(this).append(new Option(country, country));
+            const option = document.createElement('option');
+            option.value = country;
+            option.textContent = country;
+            select.appendChild(option);
         });
     });
+}
+
+// Call the function to populate the dropdowns on page load
+populateNationalityDropdowns();
+
+// Re-populate nationality dropdowns when new sections are added dynamically
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('add-button')) {
+        setTimeout(populateNationalityDropdowns, 0);
+    }
 });
 
 

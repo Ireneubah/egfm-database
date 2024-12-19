@@ -43,6 +43,7 @@ app.post('/submit', async (req, res) => {
         const { adultMembers, childMembers, address } = req.body;
 
         // Insert Adult Members and capture their IDs
+        const adultIds = [];
         for (const adult of adultMembers) {
             const result = await client.query(
                 `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
@@ -51,16 +52,46 @@ app.post('/submit', async (req, res) => {
                 [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
             );
 
-            // Store the returned ID
             const memberId = result.rows[0].id;
             console.log('Inserted Adult Member ID:', memberId);
+            adultIds.push(memberId);
+        }
 
-            // Insert Home Address for each adult member
+        // Insert Child Members and capture their IDs
+        const childIds = [];
+        for (const child of childMembers) {
+            const result = await client.query(
+                `INSERT INTO root_data.child_member (first_name, last_name, dob, nationality)
+                 VALUES ($1, $2, $3, $4)
+                 RETURNING id`,
+                [child.first_name, child.last_name, child.dob, child.nationality]
+            );
+
+            const childId = result.rows[0].id;
+            console.log('Inserted Child Member ID:', childId);
+            childIds.push(childId);
+        }
+
+        // Insert relationships into child_guardian table
+        // Link each child to all adult members (guardians)
+        for (const childId of childIds) {
+            for (const guardianId of adultIds) {
+                await client.query(
+                    `INSERT INTO root_data.child_guardian (child_id, guardian_id)
+                     VALUES ($1, $2)`,
+                    [childId, guardianId]
+                );
+                console.log(`Linked Child ID ${childId} to Guardian ID ${guardianId}`);
+            }
+        }
+
+        // Insert Home Address for all adult members
+        for (const adultId of adultIds) {
             await client.query(
                 `INSERT INTO root_data.address (member_id, address_line1, address_line2, city, postal_code, country)
                  VALUES ($1, $2, $3, $4, $5, $6)`,
                 [
-                    memberId,
+                    adultId,
                     address['address_line1'],
                     address['address_line2'],
                     address.city,
@@ -68,15 +99,7 @@ app.post('/submit', async (req, res) => {
                     address.country
                 ]
             );
-        }
-
-        // Insert Child Members (assuming these don't need a member_id reference)
-        for (const child of childMembers) {
-            await client.query(
-                `INSERT INTO root_data.child_member (first_name, last_name, dob, nationality)
-                 VALUES ($1, $2, $3, $4)`,
-                [child.first_name, child.last_name, child.dob, child.nationality]
-            );
+            console.log(`Inserted Address for Adult Member ID ${adultId}`);
         }
 
         await client.query('COMMIT');
@@ -84,12 +107,11 @@ app.post('/submit', async (req, res) => {
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error inserting data:', error);
-        res.status(500).send('Server error');
+        res.status(500).send(`Server error: ${error.message}`);
     } finally {
         client.release();
     }
 });
-
 
 // Start the Server
 app.listen(PORT, () => {

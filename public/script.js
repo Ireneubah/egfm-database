@@ -73,8 +73,7 @@ document.addEventListener('click', function (event) {
 });
 
 
-document.querySelector("#submit-btn").addEventListener('click', async (event) => {
-    event.preventDefault();
+document.querySelector("#submit-btn").addEventListener('click', (event) => {
 
     // Collect Adult Member Data
     const adults = [];
@@ -111,24 +110,24 @@ document.querySelector("#submit-btn").addEventListener('click', async (event) =>
     };
 
     // Send Data to the Server
-    try {
-        const response = await fetch('/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                adultMembers: adults,
-                childMembers: children,
-                address: address
-            })
-        });
+    // try {
+    //     const response = await fetch('/submit', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //             adultMembers: adults,
+    //             childMembers: children,
+    //             address: address
+    //         })
+    //     });
 
-        if (response.ok) {
-            alert('Registration submitted successfully!');
-        } else {
-            alert('Error submitting registration.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred: ${error.message}');
-    }
+    //     if (response.ok) {
+    //         alert('Registration submitted successfully!');
+    //     } else {
+    //         alert('Error submitting registration.');
+    //     }
+    // } catch (error) {
+    //     console.error('Error:', error);
+    //     alert('An error occurred: ${error.message}');
+    // }
 });

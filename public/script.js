@@ -1,17 +1,23 @@
 function addAdultSection(sectionId, templateId) {
     const section = document.getElementById(sectionId);
     const template = document.getElementById(templateId).content.cloneNode(true);
-    section.appendChild(template);
-    const addButton = document.getElementById('add-adult-btn');
-    section.appendChild(addButton);
+    section.insertBefore(template, document.getElementById('add-adult-btn'));
+    // const section = document.getElementById(sectionId);
+    // const template = document.getElementById(templateId).content.cloneNode(true);
+    // section.appendChild(template);
+    // const addButton = document.getElementById('add-adult-btn');
+    // section.appendChild(addButton);
 }
 
 function addChildSection(sectionId, templateId) {
     const section = document.getElementById(sectionId);
     const template = document.getElementById(templateId).content.cloneNode(true);
-    section.appendChild(template);
-    const addButton = document.getElementById('add-child-btn');
-    section.appendChild(addButton);
+    section.insertBefore(template, document.getElementById('add-child-btn'));
+    // const section = document.getElementById(sectionId);
+    // const template = document.getElementById(templateId).content.cloneNode(true);
+    // section.appendChild(template);
+    // const addButton = document.getElementById('add-child-btn');
+    // section.appendChild(addButton);
 }
 
 function removeSection(button) {
@@ -68,13 +74,13 @@ populateNationalityDropdowns();
 // Re-populate nationality dropdowns when new sections are added dynamically
 document.addEventListener('click', function (event) {
     if (event.target.classList.contains('add-button')) {
-        setTimeout(populateNationalityDropdowns, 0);
+        populateNationalityDropdowns();
     }
 });
 
 
-document.querySelector("#submit-btn").addEventListener('click', (event) => {
-
+document.querySelector("#submit-btn").addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevent form submission
     // Collect Adult Member Data
     const adults = [];
     document.querySelectorAll('.adult-member').forEach(adult => {
@@ -109,25 +115,36 @@ document.querySelector("#submit-btn").addEventListener('click', (event) => {
         country: document.querySelector('input[name="address[country]"]').value
     };
 
-    // Send Data to the Server
-    // try {
-    //     const response = await fetch('/submit', {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({
-    //             adultMembers: adults,
-    //             childMembers: children,
-    //             address: address
-    //         })
-    //     });
+    // Create the Data Object
+    const data = {
+        adultMembers: adults,
+        childMembers: children,
+        address: address 
+    };
 
-    //     if (response.ok) {
-    //         alert('Registration submitted successfully!');
-    //     } else {
-    //         alert('Error submitting registration.');
-    //     }
-    // } catch (error) {
-    //     console.error('Error:', error);
-    //     alert('An error occurred: ${error.message}');
-    // }
+    // Send Data to the Server
+    try {
+        const response = await fetch('/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                // Redirect to the success page
+                window.location.href = result.redirectUrl;
+            } else {
+                alert('Submission failed: ' + result.message);
+            }
+        } else {
+            alert('Server error. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('An error occurred while submitting the form.');
+    }
 });

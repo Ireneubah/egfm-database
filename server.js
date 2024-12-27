@@ -103,11 +103,12 @@ app.post('/submit', async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.redirect('/success.html');
+        res.status(200).json({ success: true, redirectUrl: '/success.html' });
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error inserting data:', error);
-        res.status(500).send(`Server error: ${error.message}`);
+        res.status(500).json({ success: false, message: error.message });
+        // res.status(500).send(`Server error: ${error.message}`);
     } finally {
         client.release();
     }

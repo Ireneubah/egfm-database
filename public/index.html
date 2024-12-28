@@ -11,12 +11,10 @@
 </head>
 <body>
     <form action="/submit" method="POST">
-        <!-- Banner Section -->
         <div class="banner">
             <img src="images/images.png" alt="Banner Image" class="banner-image">
         </div>
         <h1>EGFM Registration Form</h1>
-        <!-- Adults -->
         <div class="form-section" id="adult-section">
             <h3>Adult Member Information</h3>
             <button type="button" class="add-button" id="add-adult-btn" onclick="addAdultSection('adult-section', 'adult-template')">Add Adult</button>
@@ -25,13 +23,13 @@
             <div class="adult-member">
                 <h4>Adult Member</h4>
                 <label>First Name:</label><br>
-                <input type="text" name="adultMembers[][first_name]" required><br><br>
+                <input type="text" name="adultMembers[].first_name" required><br><br>
         
                 <label>Last Name:</label><br>
-                <input type="text" name="adultMembers[][last_name]" required><br><br>
+                <input type="text" name="adultMembers[].last_name" required><br><br>
         
                 <label>Marital Status:</label><br>
-                <select name="adultMembers[][marital_status]" required>
+                <select name="adultMembers[].marital_status" required>
                     <option value="Single">Single</option>
                     <option value="Married">Married</option>
                     <option value="Divorced">Divorced</option>
@@ -39,16 +37,16 @@
                 </select><br><br>
         
                 <label>Email:</label><br>
-                <input type="email" name="adultMembers[][email]" required><br><br>
+                <input type="email" name="adultMembers[].email" required><br><br>
         
                 <label>Phone:</label><br>
-                <input type="tel" class="phone" name="adultMembers[][phone]" required><br><br>
+                <input type="tel" class="phone" name="adultMembers[].phone" required><br><br>
         
                 <label>Date of Birth:</label><br>
-                <input type="date" name="adultMembers[][dob]" required><br><br>
+                <input type="date" name="adultMembers[].dob" required><br><br>
         
                 <label>Nationality:</label><br>
-                <select name="adultMembers[][nationality]" class="nationality-select" required>
+                <select name="adultMembers[].nationality" class="nationality-select" required>
                     <option value="">Select Nationality</option>
                 </select><br><br>
 
@@ -56,7 +54,6 @@
             </div>
         </template>        
 
-        <!-- Children -->
         <div class="form-section" id="child-section">
             <h3>Child Member Information</h3>
             <button type="button" class="add-button" id="add-child-btn" onclick="addChildSection('child-section', 'child-template')">Add Child</button>
@@ -65,20 +62,19 @@
             <div class="child-member">
                 <h4>Child Member</h4>
                 <label>First Name:</label><br>
-                <input type="text" name="childMembers[][first_name]" required><br><br>
+                <input type="text" name="childMembers[].first_name" required><br><br>
                 <label>Last Name:</label><br>
-                <input type="text" name="childMembers[][last_name]" required><br><br>
+                <input type="text" name="childMembers[].last_name" required><br><br>
                 <label>Date of Birth:</label><br>
-                <input type="date" name="childMembers[][dob]" required><br><br>
+                <input type="date" name="childMembers[].dob" required><br><br>
                 <label>Nationality:</label><br>
-                <select name="childMembers[][nationality]" class="nationality-select" required>
+                <select name="childMembers[].nationality" class="nationality-select" required>
                     <option value="">Select Nationality</option>
                 </select><br><br>
                 <button type="button" class="remove-button" onclick="removeSection(this)">Remove</button>
             </div>
         </template>
 
-        <!-- Home Address -->
         <div class="form-section">
             <h3>Home Address</h3>
             <label for="address-line-1">Address line 1</label><br>
@@ -93,10 +89,8 @@
             <input type="text" id="country" name="address[country]" required>
         </div>
 
-        <!-- Submit Button -->
         <button type="submit" id="submit-btn">Submit</button>
     </form>
     <script src="script.js"></script>
-    <script src="validate.js"></script> 
 </body>
 </html>

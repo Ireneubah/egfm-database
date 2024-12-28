@@ -9,11 +9,11 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-    origin: 'https://egfm-uk-db-f6b2e8e6c380.herokuapp.com/'
+    origin: process.env.ALLOWED_ORIGIN // Make sure ALLOWED_ORIGIN is set in your .env file
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public')); // Serve static files (HTML, CSS, JS)
+app.use(express.static('public')); // Serve static files
 
 // PostgreSQL Connection Pool
 const pool = new Pool({
@@ -33,6 +33,88 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// --- Server-Side Validation Functions ---
+
+// Function to validate email format
+function isValidEmail(email) {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+}
+
+// Function to check if a date is valid
+function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+}
+
+// Function to check if DOB indicates adult (18+ years)
+function isAdult(dob) {
+    if (!isValidDate(dob)) return false;
+    const birthDate = new Date(dob);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        return age - 1 >= 18;
+    }
+    return age >= 18;
+}
+
+// Validation function for adult members
+function validateAdult(adult) {
+    if (!adult.first_name || adult.first_name.trim() === '' || /\d/.test(adult.first_name)) {
+        return 'Invalid first name';
+    }
+    if (!adult.last_name || adult.last_name.trim() === '' || /\d/.test(adult.last_name)) {
+        return 'Invalid last name';
+    }
+    if (!adult.email || adult.email.trim() === '' || !isValidEmail(adult.email)) {
+        return 'Invalid email';
+    }
+    if (!adult.dob || adult.dob.trim() === '' || !isAdult(adult.dob)) {
+        return 'Invalid date of birth or age';
+    }
+    if (!adult.phone || adult.phone.trim() === '') {
+        return 'Invalid phone number';
+    } // You might need more robust phone validation
+    // Add validations for marital_status, nationality if needed
+    return null; // Return null if no validation errors
+}
+
+// Validation function for child members
+function validateChild(child) {
+    if (!child.first_name || child.first_name.trim() === '' || /\d/.test(child.first_name)) {
+        return 'Invalid first name';
+    }
+    if (!child.last_name || child.last_name.trim() === '' || /\d/.test(child.last_name)) {
+        return 'Invalid last name';
+    }
+    if (!child.dob || child.dob.trim() === '') {
+        return 'Invalid date of birth';
+    }
+    // Add validations for nationality if needed
+    return null; // Return null if no validation errors
+}
+
+// Validation function for address
+function validateAddress(address) {
+    if (!address.address_line1 || address.address_line1.trim() === '') {
+        return 'Invalid address line 1';
+    }
+    if (!address.address_line2 || address.address_line2.trim() === '') {
+        return 'Invalid address line 2';
+    }
+    if (!address.city || address.city.trim() === '') {
+        return 'Invalid city';
+    }
+    if (!address.country || address.country.trim() === '') {
+        return 'Invalid country';
+    }
+    // Add postcode validation if needed
+    return null; // Return null if no validation errors
+}
+
 // Route to Handle Form Submissions
 app.post('/submit', async (req, res) => {
     const client = await pool.connect();
@@ -41,6 +123,28 @@ app.post('/submit', async (req, res) => {
         await client.query('BEGIN');
 
         const { adultMembers, childMembers, address } = req.body;
+
+        // --- Server-Side Validation ---
+        for (const adult of adultMembers) {
+            const validationError = validateAdult(adult);
+            if (validationError) {
+                throw new Error(`Adult validation failed: ${validationError}`);
+            }
+        }
+
+        for (const child of childMembers) {
+            const validationError = validateChild(child);
+            if (validationError) {
+                throw new Error(`Child validation failed: ${validationError}`);
+            }
+        }
+
+        const addressValidationError = validateAddress(address);
+        if (addressValidationError) {
+            throw new Error(`Address validation failed: ${addressValidationError}`);
+        }
+
+        // --- Data Insertion (If Validation Passes) ---
 
         // Insert Adult Members and capture their IDs
         const adultIds = [];
@@ -73,7 +177,6 @@ app.post('/submit', async (req, res) => {
         }
 
         // Insert relationships into child_guardian table
-        // Link each child to all adult members (guardians)
         for (const childId of childIds) {
             for (const guardianId of adultIds) {
                 await client.query(
@@ -92,8 +195,8 @@ app.post('/submit', async (req, res) => {
                  VALUES ($1, $2, $3, $4, $5, $6)`,
                 [
                     adultId,
-                    address['address_line1'],
-                    address['address_line2'],
+                    address.address_line1,
+                    address.address_line2,
                     address.city,
                     address.postcode,
                     address.country
@@ -103,12 +206,11 @@ app.post('/submit', async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.status(200).json({ success: true, redirectUrl: '/success.html' });
+        res.status(200).json({ success: true, redirectUrl: '/success.html' }); // Assuming you have a success.html
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error inserting data:', error);
-        res.status(500).json({ success: false, message: error.message });
-        // res.status(500).send(`Server error: ${error.message}`);
+        console.error('Error during form submission:', error);
+        res.status(400).json({ success: false, message: error.message }); // Send back the error message for debugging
     } finally {
         client.release();
     }

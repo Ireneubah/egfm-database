@@ -311,23 +311,20 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function(response, xhr) {
+            success: function(response, status, xhr) {
+                // Check for HTML content type (for redirection in case of duplicate submission)
                 if (xhr.getResponseHeader('Content-Type').indexOf('text/html') > -1) {
-                    // Inject the HTML into the body and execute any scripts
                     document.body.innerHTML = response;
                 } else if (response.success) {
-                    // Normal success handling
+                    // Normal success handling: redirect to success page
                     window.location.href = response.redirectUrl;
                 } else {
                     // Handle validation or other errors
                     if (response.errors) {
                         // Display validation errors on the form
-                        response.errors.forEach(error => {
-                            // Display the error messages appropriately on your form
-                            // Example: Show an alert for each error
-                            alert(error);
-                        });
+                        displayValidationErrors(response.errors);
                     } else {
+                        // Display a generic error message
                         alert('Submission failed: ' + response.message);
                     }
                 }
@@ -338,4 +335,41 @@ $(document).ready(function () {
             }
         });
     });
+
+    function displayValidationErrors(errors) {
+        errors.forEach(error => {
+            if (error.startsWith('Invalid first name')) {
+                $('.adult-member input[name="adultMembers[].first_name"]').each(function() {
+                    showError(this, error);
+                });
+            } else if (error.startsWith('Invalid last name')) {
+                $('.adult-member input[name="adultMembers[].last_name"]').each(function() {
+                    showError(this, error);
+                });
+            } else if (error.startsWith('Invalid email')) {
+                $('.adult-member input[name="adultMembers[].email"]').each(function() {
+                    showError(this, error);
+                });
+            } else if (error.startsWith('Invalid date of birth or age')) {
+                $('.adult-member input[name="adultMembers[].dob"]').each(function() {
+                    showError(this, error);
+                });
+            } else if (error.startsWith('Invalid phone number')) {
+                $('.adult-member input[name="adultMembers[].phone"]').each(function() {
+                    showError(this, error);
+                });
+            } else if (error.startsWith('Invalid address line 1')) {
+                showError($('input[name="address[address-line-1]"]')[0], error);
+            } else if (error.startsWith('Invalid address line 2')) {
+                showError($('input[name="address[address-line-2]"]')[0], error);
+            } else if (error.startsWith('Invalid city')) {
+                showError($('input[name="address[city]"]')[0], error);
+            } else if (error.startsWith('Invalid country')) {
+                showError($('input[name="address[country]"]')[0], error);
+            } else {
+                // Handle any other errors
+                alert(error);
+            }
+        });
+    }
 });

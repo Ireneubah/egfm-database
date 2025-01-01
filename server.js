@@ -121,7 +121,7 @@ app.post('/submit', async (req, res) => {
 
         const { adultMembers, childMembers, address } = req.body;
 
-        // Validate all adult members before inserting
+        // Validate all members before inserting
         const validationErrors = [];
         for (const adult of adultMembers) {
             const error = validateAdult(adult);
@@ -129,16 +129,12 @@ app.post('/submit', async (req, res) => {
                 validationErrors.push(error);
             }
         }
-
-        // Validate all child members
         for (const child of childMembers) {
             const error = validateChild(child);
             if (error) {
                 validationErrors.push(error);
             }
         }
-
-        // Validate address
         const addressError = validateAddress(address);
         if (addressError) {
             validationErrors.push(addressError);
@@ -170,14 +166,8 @@ app.post('/submit', async (req, res) => {
             } catch (error) {
                 // Check if the error is a unique constraint violation
                 if (error.code === '23505') {
-                    // Set Content-Type to HTML for redirection
-                    res.setHeader('Content-Type', 'text/html');
                     // Redirect to a new HTML page for duplicate entry
-                    return res.status(200).send(`
-                        <script>
-                            window.location.href = '/duplicate.html';
-                        </script>
-                    `);
+                    return res.status(200).json({ success: true, redirectUrl: '/duplicate.html' });
                 } else {
                     throw error; // Re-throw the error if it's not a unique constraint violation
                 }
@@ -233,6 +223,8 @@ app.post('/submit', async (req, res) => {
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error during form submission:', error);
+
+        // Handle other errors
         res.status(500).json({ success: false, message: 'An error occurred during form submission.' });
     } finally {
         client.release();

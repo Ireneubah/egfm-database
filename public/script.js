@@ -311,12 +311,25 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function(response) {
-                if (response.success) {
-                    // Redirect to the success page
+            success: function(response, xhr) {
+                if (xhr.getResponseHeader('Content-Type').indexOf('text/html') > -1) {
+                    // Inject the HTML into the body and execute any scripts
+                    document.body.innerHTML = response;
+                } else if (response.success) {
+                    // Normal success handling
                     window.location.href = response.redirectUrl;
                 } else {
-                    alert('Submission failed: ' + response.message);
+                    // Handle validation or other errors
+                    if (response.errors) {
+                        // Display validation errors on the form
+                        response.errors.forEach(error => {
+                            // Display the error messages appropriately on your form
+                            // Example: Show an alert for each error
+                            alert(error);
+                        });
+                    } else {
+                        alert('Submission failed: ' + response.message);
+                    }
                 }
             },
             error: function(error) {

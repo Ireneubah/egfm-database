@@ -9,11 +9,11 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGIN // Make sure ALLOWED_ORIGIN is set in your .env file
+    origin: process.env.ALLOWED_ORIGIN
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public')); // Serve static files
+app.use(express.static('public'));
 
 // PostgreSQL Connection Pool
 const pool = new Pool({
@@ -77,8 +77,7 @@ function validateAdult(adult) {
     }
     if (!adult.phone || adult.phone.trim() === '') {
         return 'Invalid phone number';
-    } // You might need more robust phone validation
-    // Add validations for marital_status, nationality if needed
+    }
     return null; // Return null if no validation errors
 }
 
@@ -93,7 +92,6 @@ function validateChild(child) {
     if (!child.dob || child.dob.trim() === '') {
         return 'Invalid date of birth';
     }
-    // Add validations for nationality if needed
     return null; // Return null if no validation errors
 }
 
@@ -111,7 +109,6 @@ function validateAddress(address) {
     if (!address.country || address.country.trim() === '') {
         return 'Invalid country';
     }
-    // Add postcode validation if needed
     return null; // Return null if no validation errors
 }
 
@@ -124,41 +121,67 @@ app.post('/submit', async (req, res) => {
 
         const { adultMembers, childMembers, address } = req.body;
 
-        // --- Server-Side Validation ---
+        // Validate all adult members before inserting
+        const validationErrors = [];
         for (const adult of adultMembers) {
-            const validationError = validateAdult(adult);
-            if (validationError) {
-                throw new Error(`Adult validation failed: ${validationError}`);
+            const error = validateAdult(adult);
+            if (error) {
+                validationErrors.push(error);
             }
         }
 
+        // Validate all child members
         for (const child of childMembers) {
-            const validationError = validateChild(child);
-            if (validationError) {
-                throw new Error(`Child validation failed: ${validationError}`);
+            const error = validateChild(child);
+            if (error) {
+                validationErrors.push(error);
             }
         }
 
-        const addressValidationError = validateAddress(address);
-        if (addressValidationError) {
-            throw new Error(`Address validation failed: ${addressValidationError}`);
+        // Validate address
+        const addressError = validateAddress(address);
+        if (addressError) {
+            validationErrors.push(addressError);
         }
 
-        // --- Data Insertion (If Validation Passes) ---
+        // If validation errors exist, send back a 400 response
+        if (validationErrors.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: validationErrors
+            });
+        }
 
-        // Insert Adult Members and capture their IDs
+        // If no validation errors, proceed with data insertion
         const adultIds = [];
         for (const adult of adultMembers) {
-            const result = await client.query(
-                `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-                 RETURNING id`,
-                [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
-            );
+            try {
+                const result = await client.query(
+                    `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                     RETURNING id`,
+                    [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
+                );
 
-            const memberId = result.rows[0].id;
-            console.log('Inserted Adult Member ID:', memberId);
-            adultIds.push(memberId);
+                const memberId = result.rows[0].id;
+                console.log('Inserted Adult Member ID:', memberId);
+                adultIds.push(memberId);
+            } catch (error) {
+                // Check if the error is a unique constraint violation
+                if (error.code === '23505') {
+                    // Set Content-Type to HTML for redirection
+                    res.setHeader('Content-Type', 'text/html');
+                    // Redirect to a new HTML page for duplicate entry
+                    return res.status(200).send(`
+                        <script>
+                            window.location.href = '/duplicate.html';
+                        </script>
+                    `);
+                } else {
+                    throw error; // Re-throw the error if it's not a unique constraint violation
+                }
+            }
         }
 
         // Insert Child Members and capture their IDs
@@ -206,11 +229,11 @@ app.post('/submit', async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.status(200).json({ success: true, redirectUrl: '/success.html' }); // Assuming you have a success.html
+        res.status(200).json({ success: true, redirectUrl: '/success.html' });
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error during form submission:', error);
-        res.status(400).json({ success: false, message: error.message }); // Send back the error message for debugging
+        res.status(500).json({ success: false, message: 'An error occurred during form submission.' });
     } finally {
         client.release();
     }

@@ -23,57 +23,57 @@ $(document).ready(function () {
     }
 
     // Array of countries for the nationality dropdown
-    const countries = [
-        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina",
-        "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
-        "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana",
-        "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
-        "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
-        "Congo (Congo-Brazzaville)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
-        "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
-        "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
-        "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
-        "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia",
-        "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
-        "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia",
-        "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar",
-        "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
-        "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique",
-        "Myanmar (Burma)", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger",
-        "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea",
-        "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda",
-        "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
-        "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
-        "Slovenia", "Solomon Islands", "Somalia", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname",
-        "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste",
-        "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
-        "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
-        "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-    ];
+    // const countries = [
+    //     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina",
+    //     "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+    //     "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana",
+    //     "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
+    //     "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+    //     "Congo (Congo-Brazzaville)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+    //     "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
+    //     "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
+    //     "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
+    //     "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia",
+    //     "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
+    //     "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia",
+    //     "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar",
+    //     "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+    //     "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique",
+    //     "Myanmar (Burma)", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger",
+    //     "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea",
+    //     "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda",
+    //     "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+    //     "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
+    //     "Slovenia", "Solomon Islands", "Somalia", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname",
+    //     "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste",
+    //     "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
+    //     "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
+    //     "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    // ];
 
     // Function to populate nationality dropdowns
-    function populateNationalityDropdowns() {
-        const nationalitySelects = document.querySelectorAll('.nationality-select');
-        nationalitySelects.forEach(select => {
-            // Clear any existing options except the placeholder
-            select.innerHTML = '<option value="">Select Nationality</option>';
+    // function populateNationalityDropdowns() {
+    //     const nationalitySelects = document.querySelectorAll('.nationality-select');
+    //     nationalitySelects.forEach(select => {
+    //         // Clear any existing options except the placeholder
+    //         select.innerHTML = '<option value="">Select Nationality</option>';
             
-            countries.forEach(country => {
-                const option = document.createElement('option');
-                option.value = country;
-                option.textContent = country;
-                select.appendChild(option);
-            });
-        });
-    }
+    //         countries.forEach(country => {
+    //             const option = document.createElement('option');
+    //             option.value = country;
+    //             option.textContent = country;
+    //             select.appendChild(option);
+    //         });
+    //     });
+    // }
 
     // Call the function to populate the dropdowns on page load
-    populateNationalityDropdowns();
+    // populateNationalityDropdowns();
 
     // Re-populate nationality dropdowns when new sections are added dynamically
-    $(document).on('click', '.add-button', function () {
-        populateNationalityDropdowns();
-    });
+    // $(document).on('click', '.add-button', function () {
+    //     populateNationalityDropdowns();
+    // });
 
     // Initialize intl-tel-input for all phone fields dynamically
     function initializeIntlTelInputs() {
@@ -270,11 +270,11 @@ $(document).ready(function () {
             adults.push({
                 first_name: adult.querySelector('input[name="adultMembers[].first_name"]').value,
                 last_name: adult.querySelector('input[name="adultMembers[].last_name"]').value,
-                marital_status: adult.querySelector('select[name="adultMembers[].marital_status"]').value,
                 email: adult.querySelector('input[name="adultMembers[].email"]').value,
                 phone: fullNumber,
                 dob: adult.querySelector('input[name="adultMembers[].dob"]').value,
-                nationality: adult.querySelector('select[name="adultMembers[].nationality"]').value
+                gender: adult.querySelector('select[name="adultMembers[].gender"]').value,
+                referral: adult.querySelector('select[name="adultMembers[].referral"]').value
             });
         });
 
@@ -285,7 +285,7 @@ $(document).ready(function () {
                 first_name: child.querySelector('input[name="childMembers[].first_name"]').value,
                 last_name: child.querySelector('input[name="childMembers[].last_name"]').value,
                 dob: child.querySelector('input[name="childMembers[].dob"]').value,
-                nationality: child.querySelector('select[name="childMembers[].nationality"]').value
+                gender: child.querySelector('select[name="childMembers[].gender"]').value
             });
         });
 

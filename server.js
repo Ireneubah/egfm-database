@@ -154,10 +154,10 @@ app.post('/submit', async (req, res) => {
         for (const adult of adultMembers) {
             try {
                 const result = await client.query(
-                    `INSERT INTO root_data.adult_member (first_name, last_name, marital_status, email, telephone, dob, nationality, created_at)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                    `INSERT INTO root_data.adult_member (first_name, last_name, email, telephone, dob, gender,referral, created_at)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
                      RETURNING id`,
-                    [adult.first_name, adult.last_name, adult.marital_status, adult.email, adult.phone, adult.dob, adult.nationality]
+                    [adult.first_name, adult.last_name, adult.email, adult.phone, adult.dob, adult.gender,adult.referral]
                 );
 
                 const memberId = result.rows[0].id;
@@ -178,10 +178,10 @@ app.post('/submit', async (req, res) => {
         const childIds = [];
         for (const child of childMembers) {
             const result = await client.query(
-                `INSERT INTO root_data.child_member (first_name, last_name, dob, nationality)
+                `INSERT INTO root_data.child_member (first_name, last_name, dob, gender)
                  VALUES ($1, $2, $3, $4)
                  RETURNING id`,
-                [child.first_name, child.last_name, child.dob, child.nationality]
+                [child.first_name, child.last_name, child.dob, child.gender]
             );
 
             const childId = result.rows[0].id;

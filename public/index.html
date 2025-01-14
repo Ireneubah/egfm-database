@@ -28,14 +28,6 @@
                 <label>Last Name:</label><br>
                 <input type="text" name="adultMembers[].last_name" required><br><br>
         
-                <label>Marital Status:</label><br>
-                <select name="adultMembers[].marital_status" required>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
-                </select><br><br>
-        
                 <label>Email:</label><br>
                 <input type="email" name="adultMembers[].email" required><br><br>
         
@@ -44,12 +36,23 @@
         
                 <label>Date of Birth:</label><br>
                 <input type="date" name="adultMembers[].dob" required><br><br>
-        
-                <label>Nationality:</label><br>
-                <select name="adultMembers[].nationality" class="nationality-select" required>
-                    <option value="">Select Nationality</option>
-                </select><br><br>
 
+                <label>Gender</label>
+                <div class="gender">
+                    <label for="gender-male">Male</label>
+                    <input type="radio" id="gender-male" name="adultMembers[].gender" value="Male">
+                    <label for="gender-female">Female</label>
+                    <input type="radio" id="gender-female" name="adultMembers[].gender" value="Female">
+                </div>
+                <br><br>
+                <label>How did you hear about us?</label><br>
+                <select name="adultMembers[].referral" required>
+                    <option value="please select">Please select</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Family/friends">Family/friends</option>
+                    <option value="others">Others</option>
+                </select><br><br>
+                
                 <button type="button" class="remove-button" onclick="removeSection(this)">Remove</button>
             </div>
         </template>        
@@ -67,10 +70,14 @@
                 <input type="text" name="childMembers[].last_name" required><br><br>
                 <label>Date of Birth:</label><br>
                 <input type="date" name="childMembers[].dob" required><br><br>
-                <label>Nationality:</label><br>
-                <select name="childMembers[].nationality" class="nationality-select" required>
-                    <option value="">Select Nationality</option>
-                </select><br><br>
+                <label>Gender</label>
+                <div class="gender">
+                    <label for="gender-male">Male</label>
+                    <input type="radio" id="gender-male" name="childMembers[].gender" value="Male">
+                    <label for="gender-female">Female</label>
+                    <input type="radio" id="gender-female" name="childMembers[].gender" value="Female">
+                </div>
+                <br><br>
                 <button type="button" class="remove-button" onclick="removeSection(this)">Remove</button>
             </div>
         </template>
